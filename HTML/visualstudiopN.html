@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Gigantic Square</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            #game{
+                width:1500px;
+                height:900px;
+                border:solid 1px black;
+            }
+            #character{
+                width:10px;
+                height:10px;
+                background-color: red;
+                position:absolute;
+                display:block;
+            }
+            #foodA{
+                position:absolute;
+                background-color: aqua;
+            }
+            #foodB{
+                position:absolute;
+                background-color:blue;
+            }
+            #foodC{
+                position:absolute;
+                background-color: blueviolet;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <div id="character"></div>
+            <div id="foodA"></div>
+            <div id="foodB"></div>
+            <div id="foodC"></div>
+            <button onclick="end();" width="50" height="30">End Now</button>
+        </div>
+    </body>
+    <script>
+        var character = document.getElementById("character");
+        var interval;
+        var bothL = 0;
+        var bothT = 0;
+
+        
+
+        function moveLeft(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            if(characterLeft > 0){
+                character.style.left = characterLeft - characterSpeed + "px";
+            }
+            direction = 1;
+        }
+        function moveRight(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            if(characterLeft < gameWidth){
+                character.style.left = characterLeft + characterSpeed + "px";
+            }
+            direction = 2;
+        }
+        function moveUp(){
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            if(characterTop > gameTop){
+                character.style.top = characterTop - characterSpeed + "px";
+            }
+            direction = 3;
+        }
+        function moveDown(){
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            if(characterTop < gameHeight + gameTop){
+                character.style.top = characterTop + characterSpeed + "px";
+            }
+            direction = 4;
+        }
+
+        document.addEventListener("keydown", event => {
+            if(bothL == 0){
+                bothL++;
+                if(event.key === "ArrowLeft"){
+                    interval = setInterval(moveLeft, 1);
+                }
+                if(event.key === "ArrowRight"){
+                    interval = setInterval(moveRight, 1);
+                }
+            }
+            if(bothT == 0){
+                bothT++;
+                if(event.key === "ArrowUp"){
+                    interval = setInterval(moveUp, 1);
+                }
+                if(event.key === "ArrowDown"){
+                    interval = setInterval(moveDown, 1);
+                }
+            }
+        })
+
+        document.addEventListener("keyup", event => {
+            clearInterval(interval);
+            bothL = 0;
+            bothT = 0;
+        });
+    </script>
+    <script>
+        var character = document.getElementById("character") 
+        var counter = 0;
+        let eatSpeed = 0.5;
+        var stage = 0;
+        let time = 0;
+        var foodA = document.getElementById("foodA")
+        var foodB = document.getElementById("foodB")
+        var foodC = document.getElementById("foodC")
+
+        var displayA = 0;
+        var displayB = 0;
+        var displayC = 0;
+
+        var updateData = setInterval(function(){
+            var characterWidth = parseInt(window.getComputedStyle(character).getPropertyValue("width"))
+            var characterHeight = parseInt(window.getComputedStyle(character).getPropertyValue("height"))
+            gameWidth = 1500 - characterWidth
+            gameHeight = 900 - characterHeight
+            characterSpeed = 1
+            gameTop = 0
+            
+        }, 1)
+
+        var foodSpawn = setInterval(function(){
+            if(displayA == 0){
+                foodAWidth = Math.floor(Math.random() * 100) + 20
+                foodA.style.display = "block"
+                displayA = 1
+                foodA.style.width = foodAWidth + "px"
+                foodA.style.height = foodAWidth + "px"
+                foodALeft = Math.floor(Math.random() * (1500-foodAWidth))
+                foodATop = Math.floor(Math.random() * (900 - foodAWidth))
+                foodA.style.left = foodALeft + "px"
+                foodA.style.top = foodATop + "px"  
+                
+                console.log(foodALeft)      
+
+                
+            }
+            if(displayB == 0){
+                foodBWidth = Math.floor(Math.random() * 200) + 20
+                foodB.style.display = "block"
+                displayB = 1
+                foodB.style.width = foodBWidth + "px"
+                foodB.style.height = foodBWidth + "px"
+                foodBLeft = Math.floor(Math.random() * (1500-foodBWidth))
+                foodBTop = Math.floor(Math.random() * (900 - foodBWidth))
+                foodB.style.left = foodBLeft + "px"
+                foodB.style.top = foodBTop + "px"
+                console.log(foodBLeft) 
+            }
+            if(displayC == 0){
+                foodCWidth = Math.floor(Math.random() * 300) + 20
+                foodC.style.display = "block"
+                displayC = 1;
+                foodC.style.width = foodCWidth + "px"
+                foodC.style.height = foodCWidth + "px"
+                foodCLeft = Math.floor(Math.random() * (1500-foodCWidth))
+                foodCTop = Math.floor(Math.random() * (900 - foodCWidth))
+                foodC.style.left = foodCLeft + "px"
+                foodC.style.top = foodCTop + "px"
+                console.log(foodC.style.width) 
+            }
+        }, 1000)
+
+        var foodEat = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"))
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"))
+            var characterWidth = parseInt(window.getComputedStyle(character).getPropertyValue("width"))
+            var characterHeight = parseInt(window.getComputedStyle(character).getPropertyValue("height"))
+
+            var foodALeft = parseInt(window.getComputedStyle(foodA).getPropertyValue("left"))
+            var foodATop = parseInt(window.getComputedStyle(foodA).getPropertyValue("top"))
+            var foodAWidth = parseInt(window.getComputedStyle(foodA).getPropertyValue("width"))
+            var foodAHeight = parseInt(window.getComputedStyle(foodA).getPropertyValue("height"))
+
+            var foodBLeft = parseInt(window.getComputedStyle(foodB).getPropertyValue("left"))
+            var foodBTop = parseInt(window.getComputedStyle(foodB).getPropertyValue("top"))
+            var foodBWidth = parseInt(window.getComputedStyle(foodB).getPropertyValue("width"))
+            var foodBHeight = parseInt(window.getComputedStyle(foodB).getPropertyValue("height"))
+            
+            var foodCLeft = parseInt(window.getComputedStyle(foodC).getPropertyValue("left"))
+            var foodCTop = parseInt(window.getComputedStyle(foodC).getPropertyValue("top"))
+            var foodCWidth = parseInt(window.getComputedStyle(foodC).getPropertyValue("width"))
+            var foodCHeight = parseInt(window.getComputedStyle(foodC).getPropertyValue("height"))
+
+            if(displayA == 0){
+                foodA.style.display = "none"
+                eatSpeed = eatSpeed + 0.1
+            }
+            if(displayB == 0){
+                foodB.style.display = "none"
+                eatSpeed = eatSpeed + 0.1
+            }
+            if(displayC == 0){
+                foodC.style.display = "none"
+                eatSpeed = eatSpeed + 0.1
+            }
+
+            if(characterLeft + characterWidth > foodALeft &&
+                characterLeft < foodALeft + foodAWidth &&
+                characterTop + characterHeight > foodATop &&
+                characterTop < foodAHeight + foodATop){
+                    if(foodAWidth > 0 && foodAHeight > 0)
+                    {
+                        foodA.style.width = foodAWidth - eatSpeed + "px"
+                        foodA.style.height = foodAHeight - eatSpeed + "px"
+                    }
+                    if(foodAWidth <= eatSpeed){
+                            displayA = 0;
+                            character.style.width = characterWidth + parseFloat(eatSpeed)*2 + "px"
+                            character.style.height = characterHeight + parseFloat(eatSpeed)*2 + "px"
+                            
+                        }
+                }
+            if(characterLeft + characterWidth > foodBLeft &&
+                characterLeft < foodBLeft + foodBWidth && 
+                characterTop + characterHeight > foodBTop &&
+                characterTop < foodBHeight + foodBTop){
+                    if(foodBWidth > 0 && foodBHeight > 0)
+                    {
+                        foodB.style.width = foodBWidth - eatSpeed + "px"
+                        foodB.style.height = foodBHeight - eatSpeed + "px"
+                    }
+                    if(foodBWidth <= eatSpeed){
+                            displayB = 0;
+                            character.style.width = characterWidth + parseFloat(eatSpeed)*2 + "px"
+                            character.style.height = characterHeight + parseFloat(eatSpeed)*2 + "px"
+                        }
+                }
+            if(characterLeft + characterWidth > foodCLeft &&
+                characterLeft < foodCLeft + foodCWidth &&
+                characterTop + characterHeight > foodCTop &&
+                characterTop < foodCHeight + foodCTop){
+                    if(foodCWidth > 0 && foodCHeight > 0)
+                    {
+                        foodC.style.width = foodCWidth - eatSpeed + "px"
+                        foodC.style.height = foodCHeight - eatSpeed + "px"
+                        
+                    }
+                    if(foodCWidth <= eatSpeed){
+                        displayC = 0;
+                        character.style.width = characterWidth + parseFloat(eatSpeed)*2 + "px"
+                        character.style.height = characterHeight + parseFloat(eatSpeed)*2 + "px"
+                    }
+            }
+        }, 100)
+
+        var bigger = setInterval(function(){
+            var characterHeight = parseInt(window.getComputedStyle(character).getPropertyValue("height"))
+            if(characterHeight >= 900){
+                character.style.width = 20 + "px"
+                character.style.height = 20 + "px"
+                eatSpeed = 0.5;
+                stage++
+                alert("You were getting too big, so we leveled you up to next stage!\n You are now in : stage " + stage)
+            }
+        }, 1)
+
+        function end()
+        {
+            characterWidth = parseInt(window.getComputedStyle(character).getPropertyValue("width"))
+            alert("This was : stage " + stage +"\ncongrats! Your size was " + (stage*900+characterWidth) + " and it took you " + time + " seconds to reach it")
+
+            location.reload()
+
+        }
+
+        var seconds = setInterval(function(){
+            time++
+        }, 1000)
+    </script>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Red Gem Saver</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            #game{
+                width: 1500px;
+                height: 800px;
+                border:1px solid black;
+                background-color: lightgreen;
+            }
+            #frame{
+                position:relative;
+                border:5px solid black;
+                width:200px;
+                height:200px;
+                background-color: aquamarine;
+            }
+            #character{
+                position: relative;
+                width:20px;
+                height: 20px;
+                border-radius:80%;
+                background-color: red;
+            }
+            #blockA{
+                width: 200px;
+                height: 200px;
+                background-color: black;
+                position: relative;
+                border-radius: 50%;
+                animation:blockA 1500ms infinite linear;
+            }
+            #blockA{
+                width: 200px;
+                height: 200px;
+                background-color: black;
+                position: relative;
+                border-radius: 30%;
+                animation:blockA 2500ms infinite linear;
+            }
+            #blockB{
+                width: 200px;
+                height: 200px;
+                background-color: black;
+                left: 1300px;
+                position: relative;
+                border-radius: 30%;
+                animation:blockB 2500ms infinite linear;
+            }
+            @keyframes blockA{
+                0%{left:0px;}
+                100%{left:1300px;}
+            }
+            @keyframes blockB{
+                0%{left:1300px;}
+                100%{left:0px;}
+            }
+        </style>
+    </head>
+    <body style="background-color:green;">
+        <div id="game">
+            <div id="frame"></div>
+            <div id="character"></div>
+            <div id="blockA"><img src="https://c8.alamy.com/zooms/9/42139beb411d4a298512668e35bcea80/2c3nhwk.jpg" height="200" width="200"></div>
+            <div id="blockB"><img src="https://thumbs.dreamstime.com/b/illustration-red-arrow-pointing-to-left-isolated-black-background-184243406.jpg" height="200" width="200"></div>
+        </div>
+        <h1 style="text-align: center; color:red;">You must save the Red Gem inside the box by moving it!</h1>
+    </body>
+    <script>
+        gameTop = 0
+        gameLeft = 0
+        var character = document.getElementById("character");
+        var frame = document.getElementById("frame");
+        var blockA = document.getElementById("blockA");
+        var blockB = document.getElementById("blockB");
+        var counter = 0;
+        var interval;
+        var random;
+        var bothL = 0;
+        var bothT = 0;
+        var direction = 0;
+        character.style.top = -100 + "px";
+        character.style.left = 650 + "px";
+        frame.style.left = 650 + "px";
+
+        function moveLeft(){
+            var frameLeft = parseInt(window.getComputedStyle(frame).getPropertyValue("left"));
+            direction = 1;
+            if(frameLeft > 0){
+                frame.style.left = frameLeft - 2 + "px";
+            }
+        }
+        function moveRight(){
+            var frameLeft = parseInt(window.getComputedStyle(frame).getPropertyValue("left"));
+            direction = 2;
+            if(frameLeft < 1300){
+                frame.style.left = frameLeft + 2 + "px";
+            }
+        }
+        function moveUp(){
+            var frameTop = parseInt(window.getComputedStyle(frame).getPropertyValue("top"));
+            direction = 3;
+            if(frameTop > 0){
+                frame.style.top = frameTop - 2 + "px";
+            }
+        }
+        function moveDown(){
+            var frameTop = parseInt(window.getComputedStyle(frame).getPropertyValue("top"));
+            direction = 4;
+            if(frameTop < 600){
+                frame.style.top = frameTop + 2 + "px";
+            }
+        }
+
+        document.addEventListener("keydown", event => {
+            if(bothL==0){
+                bothL++;
+                if(event.key==="ArrowLeft"){
+                    interval = setInterval(moveLeft, 1);
+                }
+                if(event.key==="ArrowRight"){
+                    interval = setInterval(moveRight, 1);
+                }
+            }
+            if(bothT==0){
+                bothT++;
+                if(event.key==="ArrowUp"){
+                    interval = setInterval(moveUp, 1);
+                }
+                if(event.key==="ArrowDown"){
+                    interval = setInterval(moveDown, 1);
+                }
+            }
+        });
+        document.addEventListener("keyup", event => {
+            clearInterval(interval);
+            bothL = 0;
+            bothT = 0;
+        });
+
+        var characterMovements = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            var frameLeft = parseInt(window.getComputedStyle(frame).getPropertyValue("left"));
+            var frameTop = parseInt(window.getComputedStyle(frame).getPropertyValue("top"));
+
+            if(characterLeft <= frameLeft && direction == 2){
+                character.style.left = characterLeft + 2 + "px";
+            }
+            if(characterLeft >= (frameLeft+180) && direction == 1){
+                character.style.left = characterLeft - 2 + "px";
+            }
+            if(characterTop <= (frameTop - 200) && direction == 4){
+                character.style.top = characterTop + 2 + "px";
+            }
+            if(characterTop >= (frameTop-20) && direction == 3){
+                character.style.top = characterTop - 2 + "px";
+            }
+        }, 1);
+
+        var blockFall = setInterval(function(){
+            blockA.style.top = (randomA-220) + "px";
+            blockB.style.top = (randomB-420) + "px";
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            var blockALeft = parseInt(window.getComputedStyle(blockA).getPropertyValue("left"));
+            var blockATop = parseInt(window.getComputedStyle(blockA).getPropertyValue("top"));
+            var blockBLeft = parseInt(window.getComputedStyle(blockB).getPropertyValue("left"));
+            var blockBTop = parseInt(window.getComputedStyle(blockB).getPropertyValue("top"));
+
+            if((blockALeft+200) >= characterLeft && blockALeft <= characterLeft && (blockATop+220) >= characterTop && blockATop <= characterTop){
+                if(counter == 1){
+                    alert("You managed to save the gem " + counter + " time. Get better at this man.");
+                    location.reload();
+                    clearInterval(blockFall);
+                }else{
+                    alert("You managed to save the gem " + counter + " times");
+                    location.reload();
+                    clearInterval(blockFall);
+                }
+            }
+            if((blockBLeft+200) >= characterLeft && blockBLeft <= (characterLeft+20) && (blockBTop+220) <= (characterTop+20) && (blockBTop+420) >= characterTop){
+                if(counter == 1){
+                    alert("You managed to save the gem " + counter + " time. Get better at this man.");
+                    location.reload();
+                    clearInterval(blockFall);
+                }else{
+                    alert("You managed to save the gem " + counter + " times");
+                    location.reload();
+                    clearInterval(blockFall);
+                }
+            }
+        }, 1);
+        var randomInterval = setInterval(function(){
+            randomA = Math.floor(Math.random() * 600);
+            randomB = Math.floor(Math.random() * 600);
+            counter++;
+        }, 2500);
+    </script>
+</html>

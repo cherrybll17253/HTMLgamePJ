@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hole In The Wall, But Impossible</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            #game{
+                width:700px;
+                height:700px;
+                border:1px solid black;
+                background-color: lightgreen;
+            }
+            #character{
+                left:350px;
+                top:350px;
+                position:absolute;
+                width:20px;
+                height:20px;
+                background-color: red;
+                border-radius:50%;
+                z-index: 10000000;
+            }
+            #blockL{
+                position:absolute;
+                width:20px;
+                height:700px;
+                background-color: black;
+                animation: blockL linear infinite 4s;
+            }
+            #holeL{
+                position:absolute;
+                height:60px;
+                width:20px;
+                background-color: lightgreen;
+                animation: blockL linear infinite 4s;
+                top:20px;
+            }
+            #blockT{
+                position:absolute;
+                width:700px;
+                height:20px;
+                background-color: black;
+                animation: blockT linear infinite 8s;
+            }
+            #holeT{
+                position:absolute;
+                height:20px;
+                width:60px;
+                background-color: lightgreen;
+                animation: blockT linear infinite 8s;
+                left:620px;
+            }
+            #HPbar{
+                position:absolute;
+                height:10px;
+                width:300px;
+                left:400px;
+                background-color:hotpink;
+            }
+            @keyframes blockL{
+                0%{left:0px;}
+                50%{left:680px;}
+                100%{left:0px;}
+            }
+            @keyframes blockT{
+                0%{top:0px;}
+                50%{top:680px;}
+                100%{top:0px;}
+            }
+        </style>
+    </head>
+    <body style="background:green;">
+        <div id="game">
+            <div id="character"></div>
+            <div id="blockL"></div>
+            <duv id="holeL"></duv>
+            <div id="blockT"></div>
+            <duv id="holeT"></duv>
+            <div id="HPbar"></div>
+        </div>
+        <h1 style="color:blueviolet">Hole In The Wall, But Impossible</h1>
+        <h1 style="color:blanchedalmond">Arrow Keys To Move, Try and dodge through the hole in the wall!</h1>
+        <h1 style="color:red;">If you have been damaged, you will be protected for 3 seconds.</h1>
+    </body>
+    <script src="playermovementscript.js"></script>
+    <script>
+        gameTop = 0
+        gameLeft = 0
+        var character = document.getElementById("character");
+        var blockL = document.getElementById("blockL");
+        var holeL = document.getElementById("holeL");
+        var HPbar = document.getElementById("HPbar");
+        var frozen = 0;
+        var HP = 5;
+        var points = 0;
+        var characterSpeed = 3;
+        var gameHeight = 680;
+        var gameWidth = 680;
+
+
+        var characterDeath = setInterval(function(){
+            if(frozen == 0){
+                var blockLLeft = parseInt(window.getComputedStyle(blockL).getPropertyValue("left"));
+                var holeLTop = parseInt(window.getComputedStyle(holeL).getPropertyValue("top"));
+                var blockTTop = parseInt(window.getComputedStyle(blockT).getPropertyValue("top"));
+                var holeTLeft = parseInt(window.getComputedStyle(holeT).getPropertyValue("left"));
+                var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+                var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+                var HPbarWidth = parseInt(window.getComputedStyle(HPbar).getPropertyValue("width"));
+
+                if(characterTop > holeLTop && characterTop < (holeLTop+60)){
+                    return false;
+                }else{
+                    if(characterLeft < blockLLeft+20 && characterLeft > blockLLeft-20){
+                        frozen = 1;
+                        HP--;
+                        character.style.backgroundColor = "blue";
+                        setTimeout(function(){
+                            frozen = 0;
+                            character.style.backgroundColor = "red";
+                        }, 3000);
+                    }
+                }
+                if(characterLeft > holeTLeft && characterLeft < holeTLeft+60){
+                    return false;
+                }else{
+                    if(characterTop < blockTTop+20 && characterTop > blockTTop-20){
+                        frozen = 1;
+                        HP--;
+                        character.style.backgroundColor = "blue";
+                        setTimeout(function(){
+                            frozen = 0;
+                            character.style.backgroundColor = "red";
+                        }, 3000);
+                    }
+                }
+            }
+            if(HPbarWidth <= 0){
+                alert("Game Over. You survived for " + (points-3) + " seconds.")
+                location.reload();
+                clearInterval(characterDeath);
+            }
+        }, 1);
+
+        var holeLPosition = setInterval(function(){
+            var randomL = Math.floor(Math.random() * 620);
+            holeL.style.top = randomL + "px";
+        }, 2000);
+        var holeTPosition = setInterval(function(){
+            var randomT = Math.floor(Math.random() * 620);
+            holeT.style.left = randomT + "px";
+        }, 4000);
+
+        var timeCount = setInterval(function(){
+            points++;
+        }, 1000);
+
+        // This is the nice number ;)
+
+        var healthBar = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            HPbar.style.width = HP * 30 + "px";
+            HPbar.style.left = characterLeft-50 + "px";
+            HPbar.style.top = characterTop-20 + "px";
+        }, 1);
+    </script>
+</html>

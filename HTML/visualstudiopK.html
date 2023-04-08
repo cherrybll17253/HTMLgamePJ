@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://wallpapercave.com/wp/mTRuTkp.jpg" rel="icon">
+        <title>Coin Rush</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+                overflow: hidden;
+                background-color: black;
+            }
+            #game{
+                width:6000px;
+                height:3000px;
+                border:1px solid black;
+                position:absolute;
+                background-color:greenyellow;
+                z-index:0;
+            }
+            #player{
+                width:50px;
+                height:50px;
+                background-color: lightskyblue;
+                z-index:99999999999999999999999;
+                top:360px;
+                left:750px;
+                position:absolute;
+            }
+            #enemyA{
+                width:100px;
+                height:100px;
+                background-color:black;
+                left:6000px;
+                z-index:1000;
+                top:3000px;
+                position:absolute;
+            }
+            #movePoint{
+                position:absolute;
+                width:10px;
+                height:10px;
+                background-color: darkblue;
+                top:0px;
+                left:0px;
+                z-index:100000;
+            }
+            #speedCD{
+                height:160px;
+                width:50px;
+                background-color: white;
+                position:absolute;
+            }
+            #freezeCD{
+                height:160px;
+                width:50px;
+                left:50px;
+                background-color: aqua;
+                position:absolute;
+            }
+            #range{
+                height:350px;
+                width:350px;
+                top:200px;
+                left:600px;
+                background-color: aqua;
+                opacity:50%;
+                position:absolute;
+                z-index:99999999999999999;
+                display:none;
+            }
+            #farea{
+                height:350px;
+                width:350px;
+                top:200px;
+                left:600px;
+                display:none;
+                background-color: aliceblue;
+                position:absolute;
+                border-radius: 20%;
+            }
+            #slowCD{
+                height:160px;
+                width:50px;
+                left:100px;
+                background-color: antiquewhite;
+                position:absolute;
+            }
+
+            #fsuperCD{
+                height:160px;
+                width:50px;
+                left:150px;
+                background-color: blue;
+                position:absolute;
+            }
+            
+            #goal{
+                height:50px;
+                width:50px;
+                left:3000px;
+                top:1500px;
+                background-color: greenyellow;
+                position:absolute;
+                
+            }
+            #dA{
+                top:850px;
+                position:absolute;
+                color:white;
+            }
+            #dB{
+                top:900px;
+                position:absolute;
+                color:white;
+            }
+            #dC{
+                top:800px;
+                position:absolute;
+                color:white;
+            }
+            #dD{
+                top:750px;
+                position:absolute;
+                color:white;
+            }
+            #dE{
+                top:700px;
+                position:absolute;
+                color:white;
+            }
+            #dF{
+                top:650px;
+                position:absolute;
+                color:white;
+            }
+            #eTP{
+                background-color: red;
+                border-radius: 50%;
+                position:absolute;
+                display:none;
+            }
+        </style>
+        
+        <body>
+
+            <div id="game" onclick="moveClick();">
+                <div id="movePoint"></div>
+                <div id="enemyA" ></div>
+                <div id="farea"></div>
+                <div id="goal"></div>
+                <div id="eTP"></div>
+            </div>
+            <div id="range"></div>
+            <div id="player"></div>
+            
+            
+
+            <div id="speedCD">Icier Slide  Q</div>
+            <div id="freezeCD">Freeze  W</div>
+            <div id="slowCD">Icy Zone  E</div>
+            <div id="fsuperCD">Ice Age  R</div>
+            <div id="dA">Press A to show range of attack</div>
+            <div id="dC">Press Q to increase speed permanently</div>
+            <div id="dD">Press W to freeze the enemy within range</div>
+            <div id="dE">Press E to form a zone that slows enemy in contact</div>
+            <div id="dF">Press R to turn the whole world into ice and slow down enemy in or out of range</div>
+            <div id="dB">Press D to turn radar on to find the coins (Be aware, you will not be able to see the monster approach)</div>
+        </body>
+        <script>
+
+                //Headers//
+                var eTP = document.getElementById("eTP")
+                var frozen = 0
+                var slowCD = document.getElementById("slowCD")
+                var enemyASpeed = 2;
+                var fsuperCD = document.getElementById("fsuperCD")
+                var goal = document.getElementById("goal")
+                press = 0
+                pressR = 0
+                ftimes = 1;
+                sslowed = 0
+                var player = document.getElementById("player")
+                var game = document.getElementById("game")
+                var range = document.getElementById("range")
+                var enemyA = document.getElementById("enemy")
+                var farea = document.getElementById("farea")
+                var movePoint = document.getElementById("movePoint")
+                var speedCD= document.getElementById("speedCD")
+                playerSpeed = 1
+                var slowed = 0
+                var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                movePoint.style.left = playerLeft + "px"
+                movePoint.style.top = playerTop + "px"
+
+
+                //////////////////////Player Skill Script///////////////////////////
+
+                var interval = setInterval(function(){
+                    var speedCDH = parseInt(window.getComputedStyle(speedCD).getPropertyValue("height"))
+                    speedCD.style.height = speedCDH - 10 + "px"
+
+                    var freezeCDH = parseInt(window.getComputedStyle(freezeCD).getPropertyValue("height"))
+                    freezeCD.style.height = freezeCDH - 20 + "px"
+
+                    var slowCDH = parseInt(window.getComputedStyle(slowCD).getPropertyValue("height"))
+                    slowCD.style.height = slowCDH - 40 + "px"
+
+                    var fsuperCDH = parseInt(window.getComputedStyle(fsuperCD).getPropertyValue("height"))
+                    fsuperCD.style.height = fsuperCDH - 5 + "px"
+                }, 1000)
+
+                addEventListener("keydown", event => {
+                    var gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    var gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+                    var rangeLeft = parseInt(window.getComputedStyle(range).getPropertyValue("left"))
+                    var rangeTop = parseInt(window.getComputedStyle(range).getPropertyValue("top"))
+                    var rangeWidth = parseInt(window.getComputedStyle(range).getPropertyValue("width"))
+                    var rangeHeight = parseInt(window.getComputedStyle(range).getPropertyValue("height"))
+                    var fareaLeft = parseInt(window.getComputedStyle(farea).getPropertyValue("left"))
+                    var fareaTop = parseInt(window.getComputedStyle(farea).getPropertyValue("top"))
+                    playerfLeft = playerLeft - gameLeft
+                    playerfTop = playerTop - gameTop
+                    fareafLeft = fareaLeft - gameLeft
+                    fareafTop = fareaTop - gameTop
+                    rangefLeft = rangeLeft - gameLeft
+                    rangefTop = rangeTop - gameTop
+                    enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"))
+                    enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"))
+                    
+                    speedCooldown = parseInt(window.getComputedStyle(speedCD).getPropertyValue("height"))
+                    freezeCooldown = parseInt(window.getComputedStyle(freezeCD).getPropertyValue("height"))
+                    slowCooldown = parseInt(window.getComputedStyle(slowCD).getPropertyValue("height"))
+                    fsuperCooldown = parseInt(window.getComputedStyle(fsuperCD).getPropertyValue("height"))
+                    if(event.keyCode === 81 && playerSpeed < 3 && speedCooldown <= 0){
+                        playerSpeed += 0.5
+                        speedCD.style.height = 160+"px"
+                    }
+                    else if(playerSpeed >= 3 && event.keyCode === 81){
+                        alert("You have already reached the highest speed(level 3).")
+                    }
+                    if(event.keyCode === 87 && freezeCooldown <= 0
+                    ){
+                        freezeCD.style.height = 160 + "px"
+                        if(enemyALeft > rangeLeft 
+                        && enemyALeft < rangefLeft + rangeWidth 
+                        && enemyATop > rangefTop 
+                        && enemyATop < rangefTop + rangeHeight){
+                            
+                            setTimeout(function(){
+                                frozen = 0
+                                enemyA.style.backgroundColor = "black"
+                            }, 6000)
+                            enemyA.style.backgroundColor = "aqua"
+                            frozen = 1
+                        }
+                        
+                    }
+
+                    if(event.keyCode === 65){
+                        press++
+                        if(press % 2 == 1){
+                            range.style.display = "block"
+                        }
+                        else{
+                            range.style.display = "none"
+                        }
+                    }
+
+                    if(event.keyCode === 69 && slowCooldown <= 0){
+                        farea.style.left = rangefLeft + "px"
+                        farea.style.top = rangefTop + "px"
+                        
+                        setTimeout(function(){
+                            slowed = 0
+                            farea.style.display = "none"
+                        }, 3000)
+                        slowCD.style.height = 160 + "px"
+                        farea.style.display = "block"
+                    }
+
+                    if(event.keyCode === 82 && fsuperCooldown <= 0){
+                        setTimeout(function(){
+                            sslowed = 0
+                            slowed = 0
+                            enemyA.style.backgroundColor = "black"
+                            game.style.backgroundColor = "greenyellow"
+                        }, 10000)
+                        sslowed = 1
+                        slowed = 1
+                        enemyA.style.backgroundColor = "antiquewhite"
+                        game.style.backgroundColor = "blue"
+                        fsuperCD.style.height = 160 + "px"
+                    }
+
+                    if(event.keyCode === 68){
+                        pressR++
+                        if(pressR % 2 == 0){
+                            game.style.backgroundColor = "green"
+                            enemyA.style.display = "none"
+                        }
+                        else{
+                            enemyA.style.display = "block"
+                            if(sslowed == 0){
+                                game.style.backgroundColor = "greenyellow"
+                            }
+                            else{
+                                game.style.backgroundColor = "blue"
+                            }
+                        }
+                    }
+                })
+
+                var fareaslowedBool = setInterval(fareaslowed => {
+                    var fareaLeft = parseInt(window.getComputedStyle(farea).getPropertyValue("left"))
+                    var fareaTop = parseInt(window.getComputedStyle(farea).getPropertyValue("top"))
+                    fareafLeft = fareaLeft - gameLeft
+                    fareafTop = fareaTop - gameTop
+                    if(enemyAfLeft <= fareafLeft + 350 
+                    && enemyAfLeft + 100 >= fareafLeft
+                    && enemyAfTop <= fareafTop + 350
+                    && enemyAfTop + 100 >= fareafTop
+                    && farea.style.display == "block"
+                    ){          
+                        slowed = 1
+                        enemyA.style.backgroundColor = "antiquewhite"
+                    }
+                    else{
+                        if(frozen == 0 && slowed == 0)
+                            enemyA.style.backgroundColor = "black"
+                        else if(frozen == 1)
+                            enemyA.style.backgroundColor = "aqua"
+                        else
+                            enemyA.style.backgroundColor = "antiquewhite"
+                    }
+
+                    
+                }, 1)
+
+                ///////Player Moving Script/////////////////
+                
+                
+            
+                function moveClick(){
+                    var mpLeft = parseInt(window.getComputedStyle(movePoint).getPropertyValue("left"))
+                    var mpTop = parseInt(window.getComputedStyle(movePoint).getPropertyValue("top"))
+                    var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                    var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                    var gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    var gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+
+                    let mousex = event.clientX
+                    let mousey = event.clientY
+
+                    mpfLeft = mousex - gameLeft
+                    mpfTop = mousey - gameTop
+
+                    movePoint.style.left = mpfLeft + "px"
+                    movePoint.style.top = mpfTop + "px"
+
+                    
+                }
+                
+                var move = setInterval(function(){
+                    var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                    var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                    var mpLeft = parseInt(window.getComputedStyle(movePoint).getPropertyValue("left"))
+                    var mpTop = parseInt(window.getComputedStyle(movePoint).getPropertyValue("top"))
+                    var gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    var gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+
+                    playerfLeft = playerLeft - gameLeft
+                    playerfTop = playerTop - gameTop
+
+                    if(playerfLeft+50 < mpLeft){
+                        game.style.left = gameLeft - playerSpeed + "px"
+                    }
+                    if(playerfLeft > mpLeft){
+                        game.style.left = gameLeft + playerSpeed + "px"
+                    }
+                    if(playerfTop+50 < mpTop){
+                        game.style.top = gameTop - playerSpeed + "px"
+                    }
+                    if(playerfTop > mpTop){
+                        game.style.top = gameTop + playerSpeed + "px"
+                    }
+                    
+                }, 1)
+                
+                //////////////////////Enemy Move Script//////////////////
+
+                var enemyA = document.getElementById("enemyA")       
+                
+
+                var enemyMove = setInterval(function(){
+                    playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                    playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                        
+                    gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+
+                    playerfLeft = playerLeft - gameLeft
+                    playerfTop = playerTop - gameTop
+
+                    enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"))
+                    enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"))
+
+                    enemyAfLeft = enemyALeft - gameLeft
+                    enemyAfTop = enemyATop - gameTop
+                    if(frozen == 0){
+                        if(playerfLeft < enemyALeft){
+                            enemyA.style.left = enemyALeft - (enemyASpeed - slowed) + "px"
+                        }
+                        if(playerfLeft > enemyALeft+50){
+                            enemyA.style.left = enemyALeft + (enemyASpeed - slowed) + "px"
+                        }
+                            
+                        if(playerfTop < enemyATop){
+                            enemyA.style.top = enemyATop - (enemyASpeed - slowed) + "px"
+                        }
+                        if(playerfTop > enemyATop + 50){
+                            enemyA.style.top = enemyATop + (enemyASpeed - slowed) + "px"
+                        }
+                    }
+                }, 1)
+                var coin = 0
+                var coinCollect = setInterval(coinCollecting => {
+                    var coinLeft = parseInt(window.getComputedStyle(goal).getPropertyValue("left"))
+                    var coinTop = parseInt(window.getComputedStyle(goal).getPropertyValue("top")) 
+                    var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                    var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                    var gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    var gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+
+                    coinfLeft = coinLeft - gameLeft
+                    coinfTop = coinTop - gameTop
+                    playerfLeft = playerLeft - gameLeft
+                    playerfTop = playerTop - gameTop
+
+                    if(
+                        playerfLeft <= coinLeft + 50 &&
+                        playerfLeft + 50 >= coinLeft &&
+                        playerfTop <= coinTop + 50 &&
+                        playerfTop + 50 > coinTop
+                    ){
+                        coin++
+                        alert("Collected " + coin + " / 10 coins")
+                        goal.style.left = Math.floor(Math.random() * 6000) + "px"
+                        goal.style.top = Math.floor(Math.random() * 3000) + "px"
+                    }
+                }, 1)
+                var time = 0
+                var timeFlow = setInterval(timeFlowing => {
+                    time++
+                }, 1000)
+
+                var gameOver = setInterval(function(){
+                    
+                    var enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"))
+                    var enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"))
+                    var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"))
+                    var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"))
+                    var gameLeft = parseInt(window.getComputedStyle(game).getPropertyValue("left"))
+                    var gameTop = parseInt(window.getComputedStyle(game).getPropertyValue("top"))
+
+                    playerfLeft = playerLeft - gameLeft
+                    playerfTop = playerTop - gameTop
+                    enemyAfLeft = enemyALeft - gameLeft
+                    enemyAfTop = enemyATop - gameTop
+                    
+                    if(
+                        playerfLeft <= enemyALeft + 100 &&
+                        playerfLeft + 50 >= enemyALeft &&
+                        playerfTop <= enemyATop + 100 &&
+                        playerfTop + 50 > enemyATop
+                    ){
+                        
+                        
+                        setTimeout(function(){
+                            clearInterval(gameOver)
+                            location.reload()
+                            alert("It Caught You !!! You had " + coin + " / 10 coins in " + time + " seconds")
+                            
+                        }, 10)
+                        game.style.backgroundColor = "red"
+                        enemyA.style.display = "block"
+                    }
+
+                    if(coin == 10)
+                    {
+                        clearInterval(gameOver)
+                        alert("You managed to get all 10 coins in " + time + " seconds")
+                        location.reload()
+                    }
+                }, 1)
+                    
+        </script>    
+
+    </head>
+</html>

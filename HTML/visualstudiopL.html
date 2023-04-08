@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tower Defence</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            #game{
+                width:1500px;
+                height:900px;
+                border:1px solid black;
+                background-color:darkgoldenrod;
+            }
+            #towerA{
+                background-color: brown;
+                position: absolute;
+                width:50px;
+                height:50px;
+                top:300px;
+                left:400px;
+                z-index:3;
+            }
+            #towerB{
+                background-color: red;
+                position: absolute;
+                width:50px;
+                height:50px; 
+                top:600px;
+                left:400px;   
+                z-index:3;            
+            }
+            #towerD{
+                background-color: blue;
+                position: absolute;
+                width:50px;
+                height:50px;  
+                top:450px;
+                left:1000px;    
+                z-index:13;          
+            }
+            #eGoal{
+                background-color: yellow;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:870px;
+                left:1470px;
+                z-index:13;
+            }
+            #eSpawn{
+                background-color: limegreen;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:13;
+            }
+            #enemyA{
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                display:none;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyB{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyC{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyD{
+                display:none;
+                background-color:black;
+                position:absolute;
+                width:70px;
+                height:70px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyE{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyF{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyG{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #enemyH{
+                display:none;
+                background-color:green;
+                position:absolute;
+                width:30px;
+                height:30px;
+                top:0px;
+                left:0px;
+                z-index:33;
+            }
+            #wPointA{
+                background-color:darkblue;
+                position:absolute;
+                width:5px;
+                height:5px;
+                top:870px;
+                left:0px;
+                
+            }
+            #wPointB{
+                background-color:darkblue;
+                position:absolute;
+                width:5px;
+                height:5px;
+                top:870px;
+                left:1470px;
+                
+            }
+            #wPointC{
+                background-color:darkblue;
+                position:absolute;
+                width:5px;
+                height:5px;
+                top:150px;
+                left:850px;
+                
+            }
+            #wPointD{
+                background-color:darkblue;
+                position:absolute;
+                width:5px;
+                height:5px;
+                top:150px;
+                left:1470px;
+            }
+            #rangeA{
+                
+                background-color:burlywood;
+                position:absolute;
+                width:400px;
+                height:400px;
+                top:100px;
+                left:0px;
+                z-index:2; 
+                opacity: 0.5;               
+            }
+            #rangeB{
+                background-color:pink;
+                position:absolute;
+                width:400px;
+                height:400px;
+                top:500px;
+                left:0px;
+                z-index:2;  
+                opacity: 0.5;             
+            }
+            #rangeD{
+                background-color:lightblue;
+                position:absolute;
+                width:400px;
+                height:400px;
+                top:500px;
+                left:800px;
+                z-index:2; 
+                opacity: 0.5;               
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <div id="towerA"></div>
+            <div id="towerB"></div>
+            <div id="towerC"></div>
+            <div id="towerD"></div>
+            <div id="eGoal"></div>
+            <div id="eSpawn"></div>
+            <div id="wPointA"></div>
+            <div id="wPointB"></div>
+            <div id="wPointC"></div>
+            <div id="wPointD"></div>
+            <div id="enemyA"></div>
+            <div id="enemyB"></div>
+            <div id="enemyC"></div>
+            <div id="enemyD"></div>
+            <div id="enemyE"></div>
+            <div id="enemyF"></div>
+            <div id="enemyG"></div>
+            <div id="enemyH"></div>
+            <div id="rangeA" onclick="changeColor('arrow')"></div>
+            <div id="rangeB" onclick="changeColor('bomb')"></div>
+            <div id="rangeD" onclick="changeColor('fire')"></div>
+            <div id="pathA" style="position:absolute; z-index:0;"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-iM2Ai_vE1FWpEhrzzKExVBedFm-Mc-DtxJyKs1U0Yg&s" height="900" width="100"></div>
+            <div id="pathB" style="position:absolute; top:800px; z-index:0;"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-iM2Ai_vE1FWpEhrzzKExVBedFm-Mc-DtxJyKs1U0Yg&s" height="100" width="1500"></div>
+            
+        </div>
+    </body>
+    <script>
+
+        speed = Math.floor(Math.random() * 4);
+        if(speed == 0){
+            speed = 1;
+        }
+
+
+
+        var enemyA = document.getElementById("enemyA")
+        var enemyB = document.getElementById("enemyB")
+        var enemyC = document.getElementById("enemyC")
+        var enemyD = document.getElementById("enemyD")
+        var enemyE = document.getElementById("enemyE")
+        var enemyF = document.getElementById("enemyF")
+        var enemyG = document.getElementById("enemyG")
+        var enemyH = document.getElementById("enemyH")
+        var wPointA = document.getElementById("wPointA")
+        var wPointB = document.getElementById("wPointB")
+        var wPointC = document.getElementById("wPointC")
+        var wPointD = document.getElementById("wPointD")
+        var eGoal = document.getElementById("eGoal")
+        var eSpawn = document.getElementById("eSpawn")
+        var towerA = document.getElementById("towerA")
+        var towerB = document.getElementById("towerB")
+        var towerD = document.getElementById("towerD")
+        var rangeA = document.getElementById("rangeA")
+        var rangeB = document.getElementById("rangeB")
+        var rangeD = document.getElementById("rangeD")
+        var Escore = 0;
+        var score = 0;
+        var wpfA = 1
+        var wpfB = 1
+        var wpfC = 1
+        var wpfD = 1
+        var wpfE = 1
+        var wpfF = 1
+        var wpfG = 1
+        var wpfH = 1
+        var spawningE = 1;
+
+        var hpA = 10;
+        var hpB = 10;
+        var hpC = 10;
+        var hpD = 15;
+        var hpE = 10;
+        var hpF = 10;
+        var hpG = 10;
+        var hpH = 10;
+
+        var crA = 0;
+        var crB = 0;
+        var crD = 0;
+
+
+
+        var eMove = setInterval(function(){
+            console.log(score)
+            console.log("E "+Escore)
+            var enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"));
+            var enemyBLeft = parseInt(window.getComputedStyle(enemyB).getPropertyValue("left"));
+            var enemyCLeft = parseInt(window.getComputedStyle(enemyC).getPropertyValue("left"));
+            var enemyDLeft = parseInt(window.getComputedStyle(enemyD).getPropertyValue("left"));
+            var enemyELeft = parseInt(window.getComputedStyle(enemyE).getPropertyValue("left"));
+            var enemyFLeft = parseInt(window.getComputedStyle(enemyF).getPropertyValue("left"));
+            var enemyGLeft = parseInt(window.getComputedStyle(enemyG).getPropertyValue("left"));
+            var enemyHLeft = parseInt(window.getComputedStyle(enemyH).getPropertyValue("left"));
+
+            var enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"));
+            var enemyBTop = parseInt(window.getComputedStyle(enemyB).getPropertyValue("top"));
+            var enemyCTop = parseInt(window.getComputedStyle(enemyC).getPropertyValue("top"));
+            var enemyDTop = parseInt(window.getComputedStyle(enemyD).getPropertyValue("top"));
+            var enemyETop = parseInt(window.getComputedStyle(enemyE).getPropertyValue("top"));
+            var enemyFTop = parseInt(window.getComputedStyle(enemyF).getPropertyValue("top"));
+            var enemyGTop = parseInt(window.getComputedStyle(enemyG).getPropertyValue("top"));
+            var enemyHTop = parseInt(window.getComputedStyle(enemyH).getPropertyValue("top"));
+
+            var wPointALeft = parseInt(window.getComputedStyle(wPointA).getPropertyValue("left"));
+            var wPointBLeft = parseInt(window.getComputedStyle(wPointB).getPropertyValue("left"));
+            var wPointCLeft = parseInt(window.getComputedStyle(wPointC).getPropertyValue("left"));
+            var wPointDLeft = parseInt(window.getComputedStyle(wPointD).getPropertyValue("left"));
+
+            var wPointATop = parseInt(window.getComputedStyle(wPointA).getPropertyValue("top"));
+            var wPointBTop = parseInt(window.getComputedStyle(wPointB).getPropertyValue("top"));
+            var wPointCTop = parseInt(window.getComputedStyle(wPointC).getPropertyValue("top"));
+            var wPointDTop = parseInt(window.getComputedStyle(wPointD).getPropertyValue("top"));
+
+            if(hpA == 0){
+                enemyA.style.left = 0 + "px";
+                enemyA.style.top = 0 + "px";
+                enemyA.style.display = "none";
+                wpfA = 1;
+                score++;
+                hpA = 10;
+            }
+            if(hpB == 0){
+                enemyB.style.left = 0 + "px";
+                enemyB.style.top = 0 + "px";
+                enemyB.style.display = "none";
+                wpfB = 1;
+                score++;
+                hpB = 10;
+            }
+            if(hpC == 0){
+                enemyC.style.left = 0 + "px";
+                enemyC.style.top = 0 + "px";
+                enemyC.style.display = "none";
+                wpfC = 1;
+                score++;
+                hpC = 10;
+            }
+            if(hpD == 0){
+                
+                enemyD.style.left = 0 + "px";
+                enemyD.style.top = 0 + "px";
+                enemyD.style.display = "none";
+                wpfD = 1;
+                score++;
+                hpD = 15;
+            }
+            if(hpE == 0){
+                enemyE.style.left = 0 + "px";
+                enemyE.style.top = 0 + "px";
+                enemyE.style.display = "none";
+                wpfE = 1;
+                score++;
+                hpE = 10;
+            }
+            if(hpF == 0){
+                enemyF.style.left = 0 + "px";
+                enemyF.style.top = 0 + "px";
+                enemyF.style.display = "none";
+                wpfF = 1;
+                score++;
+                hpF = 10;
+            }
+            if(hpG == 0){
+                enemyG.style.left = 0 + "px";
+                enemyG.style.top = 0 + "px";
+                enemyG.style.display = "none";
+                wpfG = 1;
+                score++;
+                hpG = 10;
+            }
+            if(hpH == 0){
+                enemyH.style.left = 0 + "px";
+                enemyH.style.top = 0 + "px";
+                enemyH.style.display = "none";
+                wpfH = 1;
+                score++;
+                hpH = 10;
+            }
+
+
+                //migrating enemies from start to pos1
+                if(enemyATop <= wPointATop && wpfA == 1 && enemyA.style.display == "block"){
+                    enemyA.style.top = enemyATop + speed + "px";
+                    if(enemyALeft <= wPointALeft+30 && enemyATop+30 >= wPointATop && enemyATop <= wPointATop+30){
+                        wpfA = 2;
+                    }
+                }
+                if(enemyBTop <= wPointATop && wpfB == 1 && enemyB.style.display == "block"){
+                    enemyB.style.top = enemyBTop + speed + "px";
+                    if(enemyBLeft <= wPointALeft+30 && enemyBTop+30 >= wPointATop && enemyBTop <= wPointATop+30){
+                        wpfB = 2;
+                    }
+                }
+                if(enemyCTop <= wPointATop && wpfC == 1 && enemyC.style.display == "block"){
+                    enemyC.style.top = enemyCTop + speed + "px";
+                    if(enemyCLeft <= wPointALeft+30 && enemyCTop+30 >= wPointATop && enemyCTop <= wPointATop+30){
+                        wpfC = 2;
+                    }
+                }            
+                if(enemyDTop <= wPointATop && wpfD == 1 && enemyD.style.display == "block"){
+                    enemyD.style.top = enemyDTop + speed + "px";
+                    if(enemyDLeft <= wPointALeft+30 && enemyDTop+30 >= wPointATop && enemyDTop <= wPointATop+30){
+                        wpfD = 2;
+                    }
+                }
+                if(enemyETop <= wPointATop && wpfE == 1 && enemyE.style.display == "block"){
+                    enemyE.style.top = enemyETop + speed + "px";
+                    if(enemyELeft <= wPointALeft+30 && enemyETop+30 >= wPointATop && enemyETop <= wPointATop+30){
+                        wpfE = 2;
+                    }
+                }
+                if(enemyFTop <= wPointATop && wpfF == 1 && enemyF.style.display == "block"){
+                    enemyF.style.top = enemyFTop +speed + "px";
+                    if(enemyFLeft <= wPointALeft+30 && enemyFTop+30 >= wPointATop && enemyFTop <= wPointATop+30){
+                        wpfF = 2;
+                    }
+                }
+                if(enemyGTop <= wPointATop && wpfG == 1 && enemyG.style.display == "block"){
+                    enemyG.style.top = enemyGTop + speed + "px";
+                    if(enemyGLeft <= wPointALeft+30 && enemyGTop+30 >= wPointATop && enemyGTop <= wPointATop+30){
+                        wpfG = 2;
+                    }
+                }
+                if(enemyHTop <= wPointATop && wpfH == 1 && enemyH.style.display == "block"){
+                    enemyH.style.top = enemyHTop + speed + "px";
+                    if(enemyHLeft <= wPointALeft+30 && enemyHTop+30 >= wPointATop && enemyHTop <= wPointATop+30){
+                        wpfH = 2;
+                    }
+                }
+
+
+
+                //migrating enemies from pos1 to pos2
+
+                if(enemyALeft <= wPointBLeft && wpfA == 2 && enemyA.style.display == "block"){
+                    enemyA.style.left = enemyALeft + speed + "px";
+                    if(enemyALeft >= wPointBLeft-30){
+                        enemyA.style.top = 0+"px";
+                        enemyA.style.left = 0+"px";
+                        wpfA=1;
+                        Escore++;
+                    }
+                }
+                if(enemyBLeft <= wPointBLeft && wpfB == 2 && enemyB.style.display == "block"){
+                    enemyB.style.left = enemyBLeft + speed + "px";
+                    if(enemyBLeft >= wPointBLeft-30){
+                        enemyB.style.top = 0+"px";
+                        enemyB.style.left = 0+"px";
+                        wpfB=1;
+                        Escore++;
+                    }
+                }
+                if(enemyCLeft <= wPointBLeft && wpfC == 2 && enemyC.style.display == "block"){
+                    enemyC.style.left = enemyCLeft + speed + "px";
+                    if(enemyCLeft >= wPointBLeft-30){
+                        enemyC.style.top = 0+"px";
+                        enemyC.style.left = 0+"px";
+                        wpfC=1;
+                        Escore++;
+                    }
+                }
+                if(enemyDLeft <= wPointBLeft && wpfD == 2 && enemyD.style.display == "block"){
+                    enemyD.style.left = enemyDLeft + speed + "px";
+                    if(enemyDLeft >= wPointBLeft-30){
+                        enemyD.style.top = 0+"px";
+                        enemyD.style.left = 0+"px";
+                        wpfD=1;
+                        Escore++;
+                    }
+                }
+                if(enemyELeft <= wPointBLeft && wpfE == 2 && enemyE.style.display == "block"){
+                    enemyE.style.left = enemyELeft + speed + "px";
+                    if(enemyELeft >= wPointBLeft-30){
+                        enemyE.style.top = 0+"px";
+                        enemyE.style.left = 0+"px";
+                        wpfE=1;
+                        Escore++;
+                    }
+                }
+                if(enemyFLeft <= wPointBLeft && wpfF == 2 && enemyF.style.display == "block"){
+                    enemyF.style.left = enemyFLeft + speed + "px";
+                    if(enemyFLeft >= wPointBLeft-30){
+                        enemyF.style.top = 0+"px";
+                        enemyF.style.left = 0+"px";
+                        wpfF=1;
+                        Escore++;
+                    }
+                }
+                if(enemyGLeft <= wPointBLeft && wpfG == 2 && enemyG.style.display == "block"){
+                    enemyG.style.left = enemyGLeft + speed + "px";
+                    if(enemyGLeft >= wPointBLeft-30){
+                        enemyG.style.top = 0+"px";
+                        enemyG.style.left = 0+"px";
+                        wpfG=1;
+                        Escore++;
+                    }
+                }
+                if(enemyHLeft <= wPointBLeft && wpfH == 2 && enemyH.style.display == "block"){
+                    enemyH.style.left = enemyHLeft + speed + "px";
+                    if(enemyHLeft >= wPointBLeft-30 ){
+                        enemyH.style.top = 0+"px";
+                        enemyH.style.left = 0+"px";
+                        wpfH=1;
+                        Escore++;
+                    }
+                }
+
+
+
+        }, 1)
+        var eSpawn = setInterval(function(){
+            if(spawningE == 1){
+                hpA = 10;
+                enemyA.style.display = "block";
+            }
+            if(spawningE == 2){
+                hpB = 10;
+                enemyB.style.display = "block";
+            }
+            if(spawningE == 3){
+                hpC = 10;
+                enemyC.style.display = "block";
+            }
+            if(spawningE == 4){
+                hpD = 15;
+                enemyD.style.display = "block";
+            }
+            if(spawningE == 5){
+                hpE = 10;
+                enemyE.style.display = "block";
+            }
+            if(spawningE == 6){
+                hpF = 10;
+                enemyF.style.display = "block";
+            }
+            if(spawningE == 7){
+                hpG = 10;
+                enemyG.style.display = "block";
+            }
+            if(spawningE == 8){
+                hpH = 10;
+                enemyH.style.display = "block";
+            }
+            spawningE++;
+            if(spawningE >= 9){
+                spawningE = 1;
+            }
+            
+        }, 500)
+
+
+
+        function changeColor(val){
+            var enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"));
+            var enemyBLeft = parseInt(window.getComputedStyle(enemyB).getPropertyValue("left"));
+            var enemyCLeft = parseInt(window.getComputedStyle(enemyC).getPropertyValue("left"));
+            var enemyDLeft = parseInt(window.getComputedStyle(enemyD).getPropertyValue("left"));
+            var enemyELeft = parseInt(window.getComputedStyle(enemyE).getPropertyValue("left"));
+            var enemyFLeft = parseInt(window.getComputedStyle(enemyF).getPropertyValue("left"));
+            var enemyGLeft = parseInt(window.getComputedStyle(enemyG).getPropertyValue("left"));
+            var enemyHLeft = parseInt(window.getComputedStyle(enemyH).getPropertyValue("left"));
+
+            var enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"));
+            var enemyBTop = parseInt(window.getComputedStyle(enemyB).getPropertyValue("top"));
+            var enemyCTop = parseInt(window.getComputedStyle(enemyC).getPropertyValue("top"));
+            var enemyDTop = parseInt(window.getComputedStyle(enemyD).getPropertyValue("top"));
+            var enemyETop = parseInt(window.getComputedStyle(enemyE).getPropertyValue("top"));
+            var enemyFTop = parseInt(window.getComputedStyle(enemyF).getPropertyValue("top"));
+            var enemyGTop = parseInt(window.getComputedStyle(enemyG).getPropertyValue("top"));
+            var enemyHTop = parseInt(window.getComputedStyle(enemyH).getPropertyValue("top"));
+
+
+            var rangeALeft = parseInt(window.getComputedStyle(rangeA).getPropertyValue("left"));
+            var rangeBLeft = parseInt(window.getComputedStyle(rangeB).getPropertyValue("left"));
+            var rangeDLeft = parseInt(window.getComputedStyle(rangeD).getPropertyValue("left"));
+
+            var rangeATop = parseInt(window.getComputedStyle(rangeA).getPropertyValue("top"));
+            var rangeBTop = parseInt(window.getComputedStyle(rangeB).getPropertyValue("top"));
+            var rangeDTop = parseInt(window.getComputedStyle(rangeD).getPropertyValue("top"));
+            
+
+            if(val == "arrow") {
+                crA++;
+                if(crA % 2 == 1){
+                    rangeA.style.backgroundColor = "brown";
+                }else{
+                    rangeA.style.backgroundColor = "burlywood";
+                }
+
+                if(enemyALeft+30 >= rangeALeft && enemyALeft <= rangeALeft + 400 && enemyATop+30 >= rangeATop && enemyATop <= rangeATop+400){
+                    hpA--;          
+                    console.log(hpA)
+                }
+                if(enemyBLeft+30 >= rangeALeft && enemyBLeft <= rangeALeft + 400 && enemyBTop+30 >= rangeATop && enemyBTop <= rangeATop+400){
+                    hpB--;          
+                }
+                if(enemyCLeft+30 >= rangeALeft && enemyCLeft <= rangeALeft + 400 && enemyCTop+30 >= rangeATop && enemyCTop <= rangeATop+400){
+                    hpC--;          
+                }
+                if(enemyDLeft+30 >= rangeALeft && enemyDLeft <= rangeALeft + 400 && enemyDTop+30 >= rangeATop && enemyDTop <= rangeATop+400){
+                    hpD--;          
+                }
+                if(enemyELeft+30 >= rangeALeft && enemyELeft <= rangeALeft + 400 && enemyETop+30 >= rangeATop && enemyETop <= rangeATop+400){
+                    hpE--;          
+                }
+                if(enemyFLeft+30 >= rangeALeft && enemyFLeft <= rangeALeft + 400 && enemyFTop+30 >= rangeATop && enemyFTop <= rangeATop+400){
+                    hpF--;          
+                }
+                if(enemyGLeft+30 >= rangeALeft && enemyGLeft <= rangeALeft + 400 && enemyGTop+30 >= rangeATop && enemyGTop <= rangeATop+400){
+                    hpG--;          
+                }
+                if(enemyHLeft+30 >= rangeALeft && enemyHLeft <= rangeALeft + 400 && enemyHTop+30 >= rangeATop && enemyHTop <= rangeATop+400){
+                    hpH--;          
+                }
+            } else if(val == "bomb") {
+                crB++;
+                if(crB % 2 == 1){
+                    rangeB.style.backgroundColor = "red";
+                }else{
+                    rangeB.style.backgroundColor = "pink";
+                }
+            
+                if(enemyALeft+30 >= rangeBLeft && enemyALeft <= rangeBLeft + 400 && enemyATop+30 >= rangeBTop && enemyATop <= rangeBTop+400){
+                    hpA--;          
+                    console.log(hpA)
+                }
+                if(enemyBLeft+30 >= rangeBLeft && enemyBLeft <= rangeBLeft + 400 && enemyBTop+30 >= rangeBTop && enemyBTop <= rangeBTop+400){
+                    hpB--;          
+                }
+                if(enemyCLeft+30 >= rangeBLeft && enemyCLeft <= rangeBLeft + 400 && enemyCTop+30 >= rangeBTop && enemyCTop <= rangeBTop+400){
+                    hpC--;          
+                }
+                if(enemyDLeft+30 >= rangeBLeft && enemyDLeft <= rangeBLeft + 400 && enemyDTop+30 >= rangeBTop && enemyDTop <= rangeBTop+400){
+                    hpD--;          
+                }
+                if(enemyELeft+30 >= rangeBLeft && enemyELeft <= rangeBLeft + 400 && enemyETop+30 >= rangeBTop && enemyETop <= rangeBTop+400){
+                    hpE--;          
+                }
+                if(enemyFLeft+30 >= rangeBLeft && enemyFLeft <= rangeBLeft + 400 && enemyFTop+30 >= rangeBTop && enemyFTop <= rangeBTop+400){
+                    hpF--;          
+                }
+                if(enemyGLeft+30 >= rangeBLeft && enemyGLeft <= rangeBLeft + 400 && enemyGTop+30 >= rangeBTop && enemyGTop <= rangeBTop+400){
+                    hpG--;          
+                }
+                if(enemyHLeft+30 >= rangeBLeft && enemyHLeft <= rangeBLeft + 400 && enemyHTop+30 >= rangeBTop && enemyHTop <= rangeBTop+400){
+                    hpH--;          
+                }
+
+            } else if(val == "fire") {
+                crD++;
+                if(crD % 2 == 1){
+                    rangeD.style.backgroundColor = "blue";
+                }else{
+                    rangeD.style.backgroundColor = "lightblue";
+                }
+
+                if(enemyALeft+30 >= rangeDLeft && enemyALeft <= rangeDLeft + 400 && enemyATop+30 >= rangeDTop && enemyATop <= rangeDTop+400){
+                    hpA--;          
+                }
+                if(enemyBLeft+30 >= rangeDLeft && enemyBLeft <= rangeDLeft + 400 && enemyBTop+30 >= rangeDTop && enemyBTop <= rangeDTop+400){
+                    hpB--;          
+                }
+                if(enemyCLeft+30 >= rangeDLeft && enemyCLeft <= rangeDLeft + 400 && enemyCTop+30 >= rangeDTop && enemyCTop <= rangeDTop+400){
+                    hpC--;          
+                }
+                if(enemyDLeft+30 >= rangeDLeft && enemyDLeft <= rangeDLeft + 400 && enemyDTop+30 >= rangeDTop && enemyDTop <= rangeDTop+400){
+                    hpD--;          
+                }
+                if(enemyELeft+30 >= rangeDLeft && enemyELeft <= rangeDLeft + 400 && enemyETop+30 >= rangeDTop && enemyETop <= rangeDTop+400){
+                    hpE--;          
+                }
+                if(enemyFLeft+30 >= rangeDLeft && enemyFLeft <= rangeDLeft + 400 && enemyFTop+30 >= rangeDTop && enemyFTop <= rangeDTop+400){
+                    hpF--;          
+                }
+                if(enemyGLeft+30 >= rangeDLeft && enemyGLeft <= rangeDLeft + 400 && enemyGTop+30 >= rangeDTop && enemyGTop <= rangeDTop+400){
+                    hpG--;          
+                }
+                if(enemyHLeft+30 >= rangeDLeft && enemyHLeft <= rangeDLeft + 400 && enemyHTop+30 >= rangeDTop && enemyHTop <= rangeDTop+400){
+                    hpH--;          
+                }
+            }
+        }
+
+        var gameEnd = setInterval(function(){
+            if(Escore >= 10){
+                location.reload();
+                alert("You managed to stop " + score + " monsters from going to the treasure while 10 of them reached it. The difficulty was level " + speed)
+            }
+        }, 1)
+    </script>
+</html>
+
