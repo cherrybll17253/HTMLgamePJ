@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Shadow Collider</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            #game{
+                width:1000px;
+                height:800px;
+                border: 1px solid black;
+                background-color: black;
+                z-index: 1;
+            }
+            #light{
+                position:absolute;
+                border-radius: 50%;
+                background-color: yellow;
+                width:200px;
+                height:200px;
+                z-index:1000;
+            }
+            #character{
+                position:absolute;
+                background-color: red;
+                width:20px;
+                height:20px;
+                border-radius: 50%;
+                z-index:20000;
+            }
+            #blockA{
+                position:absolute;
+                background-color: black;
+                width:50px;
+                height:50px;
+                z-index:10000;
+            }
+            #blockB{
+                position:absolute;
+                background-color: black;
+                width:50px;
+                height:50px;
+                top:60px;
+                z-index:10000;
+            }
+        </style>
+    </head>
+    <body style="background-color:grey;">
+        <div id="game">
+            <div id="character"></div>
+            <div id="light"></div>
+            <div id="blockA"></div>
+            <div id="blockB"></div>
+        </div>
+        <h1>You must stack the two blocks that are scattered as fast as possible in the dark</h1>
+        <h1>Arrow keys to move</h1>
+    </body>
+    <script src="playermovementscript.js"></script>
+    <script>
+        gameTop = 0
+        gameLeft = 0
+        var character = document.getElementById("character");
+        var light = document.getElementById("light");
+        var blockA = document.getElementById("blockA");
+        var blockB = document.getElementById("blockB");
+        var time = 0;
+        var characterSpeed = 1;
+        var gameHeight = 780;
+        var gameWidth = 980;
+        var randomALeft = Math.floor(Math.random() * 950);
+        var randomBLeft = Math.floor(Math.random() * 950);
+        var randomATop = Math.floor(Math.random() * 750);
+        var randomBTop = Math.floor(Math.random() * 750);
+        blockA.style.left = randomALeft + "px";
+        blockA.style.top = randomATop + "px";
+        blockB.style.left = randomBLeft + "px";
+        blockB.style.top = randomBTop + "px";
+
+
+        var lightFollow = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+
+            light.style.left = characterLeft-100 + "px";
+            light.style.top = characterTop-90 + "px";
+        }, 1);
+
+        var blockMovements = setInterval(function(){
+            var blockALeft = parseInt(window.getComputedStyle(blockA).getPropertyValue("left"));
+            var blockBLeft = parseInt(window.getComputedStyle(blockB).getPropertyValue("left"));
+            var blockATop = parseInt(window.getComputedStyle(blockA).getPropertyValue("top"));
+            var blockBTop = parseInt(window.getComputedStyle(blockB).getPropertyValue("top"));
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            
+            if(blockALeft <= characterLeft+20 && blockATop <= characterTop+20 && blockATop+50 > characterTop && characterLeft < blockALeft && blockALeft+50 <= 1000){
+                blockA.style.left = blockALeft + 1 + "px";
+            }
+            if(blockBLeft <= characterLeft+20 && blockBTop <= characterTop+20 && blockBTop+50 > characterTop && characterLeft < blockBLeft && blockBLeft+50 <= 1000){
+                blockB.style.left = blockBLeft + 1 + "px";
+            }
+            if(blockATop <= characterTop+20 && blockALeft <= characterLeft+20 && blockALeft+50 > characterLeft && characterTop < blockATop && blockATop+50 <= 800){
+                blockA.style.top = blockATop + 1 + "px";
+            }
+            if(blockBTop <= characterTop+20 && blockBLeft <= characterLeft+20 && blockBLeft+50 > characterLeft && characterTop < blockBTop && blockBTop+50 <= 800){
+                blockB.style.top = blockBTop + 1 + "px";
+            }
+            if(blockALeft+50 >= characterLeft && blockATop <= characterTop+20 && blockATop+50 > characterTop && characterLeft+20 >= blockALeft+50 && blockALeft >= 0){
+                blockA.style.left = blockALeft - 1 + "px";
+            }
+            if(blockBLeft+50 >= characterLeft && blockBTop <= characterTop+20 && blockBTop+50 > characterTop && characterLeft+20 >= blockBLeft+50 && blockBLeft >= 0){
+                blockB.style.left = blockBLeft - 1 + "px";
+            }
+            if(blockATop+50 >= characterTop && blockALeft <= characterLeft+20 && blockALeft+50 > characterLeft && characterTop+20 >= blockATop+50 && blockATop >= 0){
+                blockA.style.top = blockATop - 1 + "px";
+            }
+            if(blockBTop+50 >= characterTop && blockBLeft <= characterLeft+20 && blockBLeft+50 > characterLeft && characterTop+20 >= blockBTop+50 && blockBTop >= 0){
+                blockB.style.top = blockBTop - 1 + "px";
+            }
+            //Victory Screen
+            if(blockALeft+50 <= blockBLeft+50 && blockALeft >= blockBLeft && blockATop+50 <= blockBTop+50 && blockATop >= blockBTop){
+                alert("You have managed it in " + time + " seconds");
+                location.reload();
+                clearInterval(blockMovements);
+            }
+        }, 1);
+
+        var timeCount = setInterval(function(){
+            time++
+        }, 1000);
+    </script>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Boulder Throwers</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            body{
+                background-color:darkgreen;
+            }
+            #game{
+                width:700px;
+                height:700px;
+                background-color: blueviolet;
+            }
+            #characterA{
+                position:relative;
+                width:20px;
+                height:20px;
+                left:350px;
+                top:80px;
+                background-color:red;
+                border-radius:50%;
+            }
+            #characterB{
+                position:relative;
+                width:20px;
+                height:20px;
+                background-color:blue;
+                border-radius:50%;
+                top:660px;
+            }
+            #blockA{
+                position: relative;
+                width:50px;
+                height:50px;
+                background-color:black;
+                border-radius:30%;
+            }
+            #blockB{
+                position: relative;
+                width:50px;
+                height:50px;
+                background-color:green;
+                border-radius:30%;
+            }
+            .blockA{
+                animation:blockA 1s linear;
+            }
+            .blockB{
+                animation: blockB 1s linear;
+            }
+            @keyframes blockA{
+                0%{top:0px;}
+                100%{top:680px;}
+            }
+            @keyframes blockB{
+                0%{top:660px;}
+                100%{top:0px;}
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <div id="characterA"><img src="https://i.pinimg.com/originals/85/78/bf/8578bfd439ef6ee41e103ae82b561986.png" height="50" width="50"></div>
+            <div id="characterB"><img src="https://i.pinimg.com/originals/a9/a4/ec/a9a4ec03fa9afc407028ca40c20ed774.jpg" height="50" width="50"></div>
+            <div id="blockA"><img src="https://media.istockphoto.com/photos/texture-of-a-rock-boulder-picture-id134174893" height="50" width="50"></div>
+            <div id="blockB"><img src="https://image.shutterstock.com/image-photo/grungy-boulder-texture-260nw-33946324.jpg" height="50" width="50"></div>
+        </div>
+        <h1 style="color:chartreuse;">Don't Press the Arrow Keys at the same time or it will bug.</h1>
+        <h1 style="color:red;">If there is a bug, reload the page, but It will not save your WinStreak!</h1>
+    </body>
+    <script>
+        gameTop = 0
+        gameLeft = 0
+        var characterA = document.getElementById("characterA");
+        var characterB = document.getElementById("characterB");
+        var blockA = document.getElementById("blockA");
+        var blockB = document.getElementById("blockB");
+        var blockAFired = 0;
+        var blockBFired = 0;
+        var interval;
+        var both  = 0;
+        var winStreak = 0;
+
+        document.addEventListener("keydown", event => {
+            if(both == 0){
+                both++;
+                if(event.key === "ArrowLeft"){
+                    interval = setInterval(moveALeft, 1);
+                }
+                if(event.key === "ArrowRight"){
+                    interval = setInterval(moveARight, 1);
+                }
+            }
+
+            if(event.key === "ArrowDown"){
+                interval = setInterval(blockAFire, 1);
+            }
+        });
+        document.addEventListener("keyup", event => {
+            clearInterval(interval);
+            both = 0;
+        });
+        function blockAFire(){
+            var blockATop = parseInt(window.getComputedStyle(blockA).getPropertyValue("top"));
+                if(blockA.classList == "blockA"){return}
+                blockA.classList.add("blockA");
+                setTimeout(function(){
+                    blockA.classList.remove("blockA");
+                    blockAFired = 0;
+                },1000);
+                blockAFired = 1;
+        }
+        function moveALeft(){
+            var characterALeft = parseInt(window.getComputedStyle(characterA).getPropertyValue("left"));
+            if(blockAFired == 0){
+                if(characterALeft > 0){
+                    characterA.style.left = characterALeft - 2 + "px";
+                }
+            }
+        }
+
+        function moveARight(){
+            var characterALeft = parseInt(window.getComputedStyle(characterA).getPropertyValue("left"));
+            if(blockAFired == 0){
+                if(characterALeft < 680){
+                    characterA.style.left = characterALeft + 2 + "px";
+                }
+            }
+        }
+
+
+
+
+        var characterBMovements = setInterval(function(){
+            var characterALeft = parseInt(window.getComputedStyle(characterA).getPropertyValue("left"));
+            var characterBLeft = parseInt(window.getComputedStyle(characterB).getPropertyValue("left"));
+            var characterBTop = parseInt(window.getComputedStyle(characterB).getPropertyValue("top"));
+            var characterATop = parseInt(window.getComputedStyle(characterA).getPropertyValue("top"));
+            var blockALeft = parseInt(window.getComputedStyle(blockA).getPropertyValue("left"));
+            var blockBLeft = parseInt(window.getComputedStyle(blockB).getPropertyValue("left"));
+            var blockATop = parseInt(window.getComputedStyle(blockA).getPropertyValue("top"));
+            var blockBTop = parseInt(window.getComputedStyle(blockB).getPropertyValue("top"));
+            blockB.style.left = characterBLeft + "px";
+            blockB.style.top = characterBTop + "px";
+            blockA.style.left = characterALeft + "px";
+            blockA.style.top = characterATop + "px";
+            var characterBSpeed = Math.floor(Math.random() * 3);
+            if(blockBFired == 0){
+                blockB.style.left = characterBLeft + "px";
+                blockB.style.top = characterBTop + "px";
+                if(characterALeft > characterBLeft){
+                    characterB.style.left = characterBLeft + characterBSpeed + "px";
+                }
+                if(characterALeft < characterBLeft){
+                    characterB.style.left = characterBLeft - characterBSpeed + "px";
+                }
+                if(characterALeft == characterBLeft){
+                    throwB();
+                }
+                if(blockALeft > characterBLeft && characterBLeft > 0 && blockAFired == 1){
+                    characterB.style.left = characterBLeft - characterBSpeed + "px";
+                }
+                if(blockALeft < characterBLeft && characterBLeft < 680 && blockAFired == 1){
+                    characterB.style.left = characterBLeft + characterBSpeed + "px";
+                }
+            }
+            function throwB(){
+                var blockBTop = parseInt(window.getComputedStyle(blockB).getPropertyValue("top"));
+                setTimeout(function(){
+                    if(blockB.classList == "blockB"){return}
+                    blockBFired = 1;
+                    blockB.classList.add("blockB");
+                }, 100);
+                setTimeout(function(){
+                    blockB.classList.remove("blockB");
+                    blockBFired = 0;
+                },1100);
+            }
+        }, 1);
+
+        var gameOver = setInterval(function(){
+            var characterALeft = parseInt(window.getComputedStyle(characterA).getPropertyValue("left"));
+            var characterBLeft = parseInt(window.getComputedStyle(characterB).getPropertyValue("left"));
+            var characterBTop = parseInt(window.getComputedStyle(characterB).getPropertyValue("top"));
+            var characterATop = parseInt(window.getComputedStyle(characterA).getPropertyValue("top"));
+            var blockALeft = parseInt(window.getComputedStyle(blockA).getPropertyValue("left"));
+            var blockBLeft = parseInt(window.getComputedStyle(blockB).getPropertyValue("left"));
+            var blockATop = parseInt(window.getComputedStyle(blockA).getPropertyValue("top"));
+            var blockBTop = parseInt(window.getComputedStyle(blockB).getPropertyValue("top"));
+
+            if((characterATop - 20) >= blockBTop && characterALeft <= (blockBLeft + 50) && (characterALeft+20) > blockBLeft){
+                winStreak = 0;
+                alert("You Lose. You now have " + winStreak + " winstreak");
+                location.reload();
+            }
+            if(characterBTop <= blockATop && characterBLeft <= (blockALeft + 50) && (characterBLeft+20) > blockALeft && blockAFired == 1){
+                winStreak++;
+                alert("You Win. You now have " + winStreak + " winstreak");
+                characterA.style.left = 350 + "px";
+                characterB.style.left = 0 + "px";
+            }
+        }, 1);
+    </script>
+</html>

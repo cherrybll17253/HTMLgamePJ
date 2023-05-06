@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Death Taggers</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            body{
+                background-color: forestgreen;
+            }
+            #game{
+                background-color: lightgreen;
+                border:1px solid black;
+                width: 500px;
+                height: 500px;
+            }
+            #character{
+                position:relative;
+                width:20px;
+                height:20px;
+                border-radius: 50%;
+                top:400px;
+                left:230px;
+                background-color:coral;
+            }
+            #enemyA{
+                position:relative;
+                width:20px;
+                height:20px;
+                background-color:black;
+            }
+            #enemyB{
+                position:relative;
+                width:50px;
+                height:50px;
+                background-color:brown;
+            }
+            #pDash{
+                position: relative;
+                width:20px;
+                height:20px;
+                background:blue;
+            }
+            #pFreeze{
+                position: relative;
+                width:20px;
+                height:20px;
+                background:blue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <div id="character"></div>
+            <div id="enemyA"></div>
+            <div id="enemyB"></div>
+            <div id="pDash">Dash</div>
+            <div id="pFreeze">Freeze</div>
+        </div>
+        <h1 style="color:red;">You can just be under the blue blocks for Power Ups!</h1>
+    </body>
+    <script>
+        gameTop = 0
+        gameLeft = 0
+        var character = document.getElementById("character");
+        var enemyA = document.getElementById("enemyA");
+        var pDash = document.getElementById("pDash");
+        var pFreeze = document.getElementById("pFreeze");
+        var counter = 0;
+        var characterSpeed = 2;
+        var freeze = 0;
+        var interval;
+        var bothL = 0;
+        var bothT = 0;
+        var randomALeft = Math.floor(Math.random() * 480);
+        var randomATop = Math.floor(Math.random() * 200);
+        var randomBLeft = Math.floor(Math.random() * 480);
+        var randomBTop = Math.floor(Math.random() * 200);
+        enemyA.style.left = randomALeft + "px";
+        enemyA.style.top = randomATop + "px";
+        enemyB.style.left = randomBLeft + "px";
+        enemyB.style.top = randomBTop + "px";
+
+        function moveLeft(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            if(characterLeft > 0){
+                character.style.left = characterLeft - characterSpeed + "px";
+            }
+        }
+        function moveRight(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            if(characterLeft < 480){
+                character.style.left = characterLeft + characterSpeed + "px";
+            }
+        }
+        function moveUp(){
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            if(characterTop > 0){
+                character.style.top = characterTop - characterSpeed + "px";        
+            }
+        }
+        function moveDown(){
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            if(characterTop < 480){
+                character.style.top = characterTop + characterSpeed + "px";        
+            }
+        }
+
+
+        document.addEventListener("keydown", event => {
+            if(bothL == 0){
+                bothL++;
+                if(event.key === "ArrowLeft"){
+                    interval = setInterval(moveLeft, 1);    
+                }
+                if(event.key === "ArrowRight"){
+                    interval = setInterval(moveRight, 1);
+                }
+            }
+            if(bothT == 0){
+                bothT++;
+                if(event.key === "ArrowUp"){
+                    interval = setInterval(moveUp, 1);    
+                }
+                if(event.key === "ArrowDown"){
+                    interval = setInterval(moveDown, 1);
+                }
+            }
+        });
+        document.addEventListener("keyup", event => {
+            clearInterval(interval);
+            bothL = 0;
+            bothT = 0;
+        });
+
+        var enemyMovements = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            var enemyALeft = parseInt(window.getComputedStyle(enemyA).getPropertyValue("left"));
+            var enemyATop = parseInt(window.getComputedStyle(enemyA).getPropertyValue("top"));
+            var enemyBLeft = parseInt(window.getComputedStyle(enemyB).getPropertyValue("left"));
+            var enemyBTop = parseInt(window.getComputedStyle(enemyB).getPropertyValue("top"));
+            var randomASpeed = Math.floor(Math.random() * 3);
+            var randomBSpeed = Math.floor(Math.random() * 2);
+            if(freeze == 0){
+                if(enemyALeft < characterLeft){
+                    enemyA.style.left = enemyALeft + randomASpeed + "px";
+                }
+                if(enemyALeft > characterLeft){
+                    enemyA.style.left = enemyALeft - randomASpeed + "px";
+                }
+                if(enemyATop < characterTop && enemyATop < 460){
+                    enemyA.style.top = enemyATop + randomASpeed + "px";
+                }
+                if(enemyATop > (characterTop)){
+                    enemyA.style.top = enemyATop - randomASpeed + "px";
+                }
+            // // // // // // // // // // // EnemyA And EnemyB Code BorderLine // // // // // // // // // // // // // //
+                if(enemyBLeft < characterLeft){
+                    enemyB.style.left = enemyBLeft + randomBSpeed + "px";
+                }
+                if(enemyBLeft > characterLeft){
+                    enemyB.style.left = enemyBLeft - randomBSpeed + "px";
+                }
+                if(enemyBTop < characterTop && enemyBTop < 440){
+                    enemyB.style.top = enemyBTop + randomBSpeed + "px";
+                }
+                if(enemyBTop > (characterTop)){
+                    enemyB.style.top = enemyBTop - randomBSpeed + "px";
+                }
+            // // / // // // /// // // /// // /// /// /Character Death Code BorderLine// // // // // // // //
+                if(characterLeft >= enemyALeft && characterLeft <= (enemyALeft+20) && characterTop >= enemyATop && characterTop <= (enemyATop+20)){
+                    alert("Boom You survived " + (counter-4) + " Seconds");
+                    clearInterval(enemyMovements);
+                    location.reload();
+                }
+                if(characterLeft >= enemyBLeft && characterLeft <= (enemyBLeft+50) && characterTop >= enemyBTop && characterTop <= (enemyBTop+50)){
+                    alert("Boom You survived " + (counter-4) + " Seconds");
+                    clearInterval(enemyMovements);
+                    location.reload();
+                }
+            }
+        }, 1);
+
+        var PowerUp = setInterval(function(){
+            var randomAPosLeft = Math.floor(Math.random() * 480);
+            var randomAPosTop = Math.floor(Math.random() * 400);
+            var randomBPosLeft = Math.floor(Math.random() * 480);
+            var randomBPosTop = Math.floor(Math.random() * 400);
+
+            pDash.style.display = "block";
+            pFreeze.style.display = "block";
+
+            pDash.style.left = randomAPosLeft + "px";
+            pDash.style.top = randomAPosTop + "px";
+            pFreeze.style.left = randomBPosLeft + "px";
+            pFreeze.style.top = randomBPosTop + "px";
+        }, 5000);
+
+        var powerUpGet = setInterval(function(){
+            var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+            var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+            var dashLeft = parseInt(window.getComputedStyle(pDash).getPropertyValue("left"));
+            var dashTop = parseInt(window.getComputedStyle(pDash).getPropertyValue("top"));
+            var frzLeft = parseInt(window.getComputedStyle(pFreeze).getPropertyValue("left"));
+            var frzTop = parseInt(window.getComputedStyle(pFreeze).getPropertyValue("top"));
+            if(characterLeft >= dashLeft && characterLeft <= (dashLeft+20) && characterTop >= (dashTop+80) && characterTop <= (dashTop + 100)){
+                alert("Speed PowerUp");
+                characterSpeed = 5;
+                setTimeout(function(){
+                    characterSpeed = 2;
+                }, 4000)
+                pDash.style.display = "none";
+                pDash.style.left = 700 + "px";
+            }
+            if(characterLeft >= frzLeft && characterLeft <= (frzLeft+20) && characterTop >= (frzTop+100) && characterTop <= (frzTop + 120)){
+                alert("Freeze Enemy");
+                freeze = 1
+                setTimeout(function(){
+                    freeze = 0;
+                }, 4000)
+                pFreeze.style.display = "none";
+                pFreeze.style.left = 700 + "px";
+            }
+        }, 1)
+
+        var counter = setInterval(function(){
+            counter++
+        }, 1000)
+    </script>
+</html>

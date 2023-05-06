@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TicTacToe</title>
+        <style>
+            *{
+                padding:0;
+                margin:0;
+            }
+            table{
+                border:solid black 1px;
+                border-collapse:collapse;
+            }
+            td, th{
+                border:solid black 1px;
+                width:100px;
+                height:100px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rows/Columns</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>a</th>
+                    <td id="a1">t</td>
+                    <td id="a2">i</td>
+                    <td id="a3">c</td>
+                </tr>
+                <tr>
+                    <th>b</th>
+                    <td id="b1">t</td>
+                    <td id="b2">a</td>
+                    <td id="b3">c</td>
+                </tr>
+                <tr>
+                    <th>c</th>
+                    <td id="c1">d</td>
+                    <td id="c2">o</td>
+                    <td id="c3">e</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    <script>
+        turn = 1
+        a1 = 't';a2 = 'i';a3 = 'c';b1 = 't';b2 = 'a';b3 = 'c';c1 = 'd';c2 = 'o';c3 = 'e';
+        document.addEventListener("DOMContentLoaded", function(){
+            
+            document.querySelector("#a1").onclick = function(){
+                if(this.innerHTML == 't'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                        
+                    }
+                    else{
+                        this.innerHTML = "X" 
+                    }
+                    a1 = this.innerHTML
+                }
+            }
+            document.querySelector("#a2").onclick = function(){
+                if(this.innerHTML == 'i'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    a2 = this.innerHTML
+                }
+            }
+            document.querySelector("#a3").onclick = function(){
+                if(this.innerHTML == 'c'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    a3 = this.innerHTML
+                }     
+            }
+            document.querySelector("#b1").onclick = function(){
+                if(this.innerHTML == 't'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    b1 = this.innerHTML
+                }
+            }
+            document.querySelector("#b2").onclick = function(){
+                if(this.innerHTML == 'a'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    b2 = this.innerHTML
+                }
+            }
+            document.querySelector("#b3").onclick = function(){
+                if(this.innerHTML == 'c'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    b3 = this.innerHTML
+                }
+            }
+            document.querySelector("#c1").onclick = function(){
+                if(this.innerHTML == 'd'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    c1 = this.innerHTML
+                }
+            }
+            document.querySelector("#c2").onclick = function(){
+                if(this.innerHTML == 'o'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    c2 = this.innerHTML
+                }
+            }
+            document.querySelector("#c3").onclick = function(){
+                if(this.innerHTML == 'e'){
+                    turn++
+                    if(turn % 2 == 0){
+                        this.innerHTML = "O"
+                    }
+                    else{
+                        this.innerHTML = "X"
+                    }
+                    c3 = this.innerHTML
+                }
+            }
+        })
+
+        ///////////////////////////////////////////////////////////////////////////
+        
+        var checkO = setInterval(checkingO => {
+            if(
+                a1 == a2 && a2 == a3 && a1 == 'O'||
+                b1 == b2 && b2 == b3 && b1 == 'O'||
+                c1 == c2 && c2 == c3 && c1 == 'O'||
+                a1 == b1 && b1 == c1 && a1 == 'O'||
+                a2 == b2 && b2 == c2 && a2 == 'O'||
+                a3 == b3 && b3 == c3 && a3 == 'O'||
+                a1 == b2 && b2 == c3 && a1 == 'O'||
+                a3 == b2 && b2 == c1 && a3 == 'O'
+            ){
+                clearInterval(checkO)
+                alert("O")
+                location.reload()
+            }
+        })
+        var checkX = setInterval(checkingX => {
+            if(
+                a1 == a2 && a2 == a3 && a1 == 'X'||
+                b1 == b2 && b2 == b3 && b1 == 'X'||
+                c1 == c2 && c2 == c3 && c1 == 'X'||
+                a1 == b1 && b1 == c1 && a1 == 'X'||
+                a2 == b2 && b2 == c2 && a2 == 'X'||
+                a3 == b3 && b3 == c3 && a3 == 'X'||
+                a1 == b2 && b2 == c3 && a1 == 'X'||
+                a3 == b2 && b2 == c1 && a3 == 'X'
+            ){
+                clearInterval(checkX)
+                alert("X")
+                location.reload()
+            }
+        })
+    </script>
+</html>

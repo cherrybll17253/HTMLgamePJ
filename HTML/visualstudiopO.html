@@ -1,0 +1,126 @@
+<title>It's sticky outside</title>
+<meta charset="UTF-8">
+<style>
+    *{
+        padding:0;
+        margin:0;
+        background-color: blue;
+    }
+    #game{
+        width:500px;
+        height:500px;
+        border:solid 1px black;
+        border-radius:50%;
+        background-color:white;
+    }
+    #character{
+        position:absolute;
+        width:20px;
+        height:20px;
+        left:490px;
+        top:490px;
+        background-color:red;
+    }
+    #blob{
+        position:absolute;
+        width:30px;
+        height:30px;
+        left:0px;
+        top:0px;
+        border-radius:60%;
+        background-color:greenyellow;
+    }
+</style>
+<h1 id="csize"></h1>
+<div id="game">
+    <div id="character"></div>
+    <div id="blob"></div>
+</div>
+<script>
+    timer = 0
+    update=setInterval(function(){
+        document.getElementById("csize").innerHTML = 1000 - timer*10
+    })
+    character = document.getElementById("character")
+    var interval
+    bothL = 0
+    bothT = 0
+    var gameShrink = setInterval(function(){
+        game.style.width = 1000 - timer*10 + "px"
+        game.style.height = 1000 - timer*10 + "px"
+    }, 1)
+    function moveLeft(){
+        characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"))
+        character.style.left = characterLeft - 3 + "px"
+    }
+    function moveRight(){
+        characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"))
+        character.style.left = characterLeft + 3 + "px"
+    }
+    function moveUp(){
+        characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"))
+        character.style.top = characterTop - 3 + "px"
+    }
+    function moveDown(){
+        characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"))
+        character.style.top = characterTop + 3 + "px"
+    }
+
+    document.addEventListener("keydown", event => {
+        characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"))
+        characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"))
+        gameHeight = parseInt(window.getComputedStyle(game).getPropertyValue("height"))
+        gameWidth = parseInt(window.getComputedStyle(game).getPropertyValue("width"))
+
+        if(
+        (characterLeft - gameWidth/2)*(characterLeft - gameWidth/2) + (characterTop-gameHeight/2)*(characterTop-gameHeight/2) < gameWidth/2*gameWidth/2
+        ){
+            if(bothL == 0){
+                bothL++
+                if(event.key === "ArrowLeft") interval = setInterval(moveLeft, 1)
+                if(event.key === "ArrowRight") interval = setInterval(moveRight, 1)
+            }
+            if(bothT == 0){
+                bothT++
+                if(event.key === "ArrowUp") interval = setInterval(moveUp, 1)
+                if(event.key === "ArrowDown") interval = setInterval(moveDown, 1)
+            }
+        }
+        else{
+            clearInterval(interval)     
+            alert("You cannot move when you are out.")
+        }
+    })
+    document.addEventListener("keyup", event => {
+        clearInterval(interval)
+        bothT = 0
+        bothL = 0
+    })
+    blob = document.getElementById("blob")
+    var blobMove = setInterval(function(){
+        blobLeft = parseInt(window.getComputedStyle(blob).getPropertyValue("left"))
+        blobTop = parseInt(window.getComputedStyle(blob).getPropertyValue("top"))
+        characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"))
+        characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"))
+        if(characterLeft < blobLeft)
+            blob.style.left = blobLeft - 1.5 + "px"
+        else if(characterLeft > blobLeft)
+            blob.style.left = blobLeft + 1.5 + "px"
+        else if(characterTop < blobTop)
+            blob.style.top = blobTop - 1.5 + "px"
+        else if(characterTop > blobTop)
+            blob.style.top = blobTop + 1.5 + "px"    
+        else{
+            location.reload()
+            if(timer <= 1)
+                alert("It caught you. You survived " + timer + " Second")
+            else
+                alert("It caught you. You survived " + timer + " Seconds")
+            clearInterval(blobMove)
+        }
+    }, 1)
+    var time = setInterval(function(){
+        timer++
+    }, 1000)
+    
+</script>
